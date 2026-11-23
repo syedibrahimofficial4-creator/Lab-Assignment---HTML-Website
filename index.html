@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emberveil Academy of Dragon Magic</title>
+<style>
+:root{--ink:#1b1030;--purple:#5b2a86;--violet:#8a4fd0;--pink:#ff5fa8;--blush:#ffd6ea;--cream:#fff4fa;--text:#2a1a40;--muted:#6d5a85}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Trebuchet MS','Segoe UI',sans-serif;background:var(--cream);color:var(--text);line-height:1.65;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+
+/* Header & Navigation */
+header{background:var(--ink);position:sticky;top:0;z-index:30;border-bottom:4px solid var(--pink)}
+.bar{max-width:1240px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.brand{color:#fff;font-weight:800;font-size:1.1rem}.brand span{color:var(--pink)}
+.brand small{display:block;font-weight:400;color:#cbb6e8;font-size:.72rem}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+.dd{position:relative}
+.dd>a{display:block;color:#eadcff;padding:8px 14px;border-radius:20px;font-weight:600;font-size:.92rem;transition:.25s}
+.dd:hover>a{background:var(--pink);color:var(--ink)}
+.menu{display:none;position:absolute;right:0;top:100%;background:#fff;min-width:220px;border-radius:14px;padding:8px;box-shadow:0 10px 30px rgba(27,16,48,.3);border:2px solid var(--blush);animation:pop .2s ease}
+@keyframes pop{from{opacity:0;transform:translateY(-8px) scale(.95)}}
+.dd:hover .menu{display:block}
+.menu a{display:block;padding:7px 12px;border-radius:8px;font-size:.88rem;color:var(--text)}
+.menu a:hover{background:var(--blush);color:var(--purple)}
+
+/* Full-Screen Hero Section */
+.hero{background:radial-gradient(circle at 20% 20%,#7b3fb8,transparent 50%),radial-gradient(circle at 85% 80%,#ff5fa8 0,transparent 45%),var(--ink);color:#fff;text-align:center;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:80px 20px;position:relative;overflow:hidden}
+.hero h1{font-size:3rem;max-width:780px;margin:0 auto;position:relative;z-index:2;animation:rise 1s both;pointer-events:none}
+.hero h1 em{color:var(--pink);font-style:normal}
+.hero p{margin:16px auto 0;max-width:620px;color:#e6d8fb;position:relative;z-index:2;animation:rise 1s .2s both;pointer-events:none}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}}
+.btn{display:inline-block;margin-top:28px;background:var(--pink);color:var(--ink);font-weight:800;padding:14px 34px;border-radius:30px;box-shadow:0 5px 0 #c63c82;transition:.15s;position:relative;z-index:4;animation:rise 1s .4s both,pulse 2.4s 1.5s infinite}
+@keyframes pulse{50%{box-shadow:0 5px 0 #c63c82,0 0 0 12px rgba(255,95,168,.25)}}
+.btn:hover{transform:translateY(3px);box-shadow:0 2px 0 #c63c82}
+.drag-hint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:3;font-size:.84rem;color:#eadcff;background:rgba(27,16,48,.65);border:1px solid rgba(255,95,168,.45);padding:7px 18px;border-radius:20px;pointer-events:none}
+
+/* Hero Sky & Interactive Dragons */
+.sky{position:absolute;inset:0;z-index:1;pointer-events:none}
+.sky i{position:absolute;display:block;background:rgba(255,255,255,.15);border-radius:50px;animation:drift linear infinite}
+.sky i::before,.sky i::after{content:"";position:absolute;background:inherit;border-radius:50%}
+.sky i::before{width:55%;height:160%;left:12%;top:-70%}.sky i::after{width:40%;height:130%;right:14%;top:-45%}
+@keyframes drift{from{transform:translateX(-250px)}to{transform:translateX(1600px)}}
+.star{position:absolute;color:var(--pink);animation:twinkle 2.5s ease-in-out infinite;pointer-events:none;z-index:1}
+@keyframes twinkle{0%,100%{opacity:.25;transform:scale(.65)}50%{opacity:1;transform:scale(1.3) rotate(20deg)}}
+
+.dragon-wrap{position:absolute;left:0;top:0;z-index:6;cursor:grab;touch-action:none;user-select:none;will-change:transform}
+.dragon-wrap.is-hovered,.dragon-wrap.is-dragging{z-index:12}
+.dragon-wrap.is-dragging{cursor:grabbing}
+.dragon-svg{display:block;width:100%;height:auto;pointer-events:none;transition:transform .24s cubic-bezier(.22,1,.36,1),filter .24s ease}
+.dragon-wrap.is-hovered .dragon-svg{transform:scale(1.18);filter:drop-shadow(0 0 22px rgba(255,211,77,.95)) !important}
+.dragon-wrap.is-dragging .dragon-svg{transform:scale(1.22);filter:drop-shadow(0 0 28px rgba(255,255,255,.95)) !important}
+.dragon-wrap.pink-med{width:190px}.dragon-wrap.pink-med .dragon-svg{filter:drop-shadow(0 0 14px rgba(255,95,168,.75))}
+.dragon-wrap.gold-lg{width:245px}.dragon-wrap.gold-lg .dragon-svg{filter:drop-shadow(0 0 18px rgba(255,180,50,.85))}
+.dragon-wrap.emerald-sm{width:145px}.dragon-wrap.emerald-sm .dragon-svg{filter:drop-shadow(0 0 15px rgba(46,229,157,.8))}
+
+.wing{transform-origin:70px 60px;animation:flap .55s ease-in-out infinite alternate}
+@keyframes flap{from{transform:rotate(-12deg) scaleY(1)}to{transform:rotate(14deg) scaleY(.7)}}
+.flame{transform-origin:left center;animation:flick .25s ease-in-out infinite alternate}
+@keyframes flick{from{transform:scale(1,.8)}to{transform:scale(1.25,1.1)}}
+
+/* Main Layout & Split Sections */
+main{max-width:1240px;margin:auto;padding:30px 20px}
+section{padding:42px 0}
+h2{font-size:1.95rem;color:var(--purple);margin-bottom:6px;text-align:left}
+h2::after{content:"";display:block;width:0;height:5px;border-radius:5px;background:var(--pink);margin:8px 0 22px;transition:width 1s .3s}
+.show h2::after,h2.show::after{width:70px}
+.split-sec{display:grid;grid-template-columns:1.08fr 0.92fr;gap:36px;align-items:center}
+.split-left{text-align:left}
+.split-left .grid{grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:26px 20px}
+
+/* Standalone Glowing Arcane Vision Portal Frame */
+.art-showcase{position:relative;background:radial-gradient(circle at 50% 25%,#411d6b 0%,#1b1030 78%);border:3px solid #ff5fa8;border-radius:190px 190px 28px 28px;padding:34px 24px 24px;box-shadow:0 22px 48px rgba(27,16,48,.34),0 0 0 8px rgba(255,95,168,.16),inset 0 0 36px rgba(138,79,208,.45);text-align:center;color:#fff;overflow:hidden;transition:transform .35s ease,box-shadow .35s ease}
+.art-showcase:hover{transform:translateY(-6px);box-shadow:0 28px 54px rgba(27,16,48,.42),0 0 0 10px rgba(255,95,168,.26),inset 0 0 44px rgba(255,95,168,.35)}
+.art-showcase::before{content:"✦ ARCANE VISION ✦";display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.14em;color:var(--ink);background:linear-gradient(90deg,#ffd34d,#ff5fa8);padding:4px 14px;border-radius:20px;margin-bottom:14px}
+.art-showcase svg{width:100%;height:auto;display:block;margin:0 auto 14px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.35))}
+.art-showcase h3{color:#ffd6ea;font-size:1.35rem;margin-bottom:6px}
+.art-showcase p{color:#d8c4f4;font-size:.94rem;max-width:420px;margin:0 auto}
+
+/* Cloud Cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:34px 26px}
+.mv{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:34px 26px}
+.card{--bg:#fff;position:relative;z-index:0;background:var(--bg)!important;border:none;border-radius:70px 80px 60px 75px/60px 70px 65px 70px;padding:44px 28px 28px;margin-top:24px;filter:drop-shadow(0 10px 14px rgba(138,79,208,.22));animation:float 6s ease-in-out infinite;transition:transform .3s,filter .3s}
+.card::before,.card::after{content:"";position:absolute;background:var(--bg);border-radius:50%;z-index:-1}
+.card::before{width:88px;height:88px;top:-25px;left:22%}
+.card::after{width:66px;height:66px;top:-15px;right:20%}
+.card:nth-child(2n){animation-delay:-2s}.card:nth-child(3n){animation-delay:-4s}
+.card:hover{transform:translateY(-10px) scale(1.04);filter:drop-shadow(0 16px 20px rgba(255,95,168,.45));animation-play-state:paused}
+.card[style*="ink"],.mv .card:first-child{--bg:#1b1030}
+.mv .card:first-child h3{color:var(--pink)}.mv .card:first-child li,.mv .card:first-child p{color:#d9c8f2}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -9px}}
+.card h3,.card h4{color:var(--purple);margin-bottom:6px}.card p,.card li{color:var(--muted);font-size:.95rem}
+.tag{display:inline-block;background:var(--ink);color:var(--pink);font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:12px;margin-bottom:8px}
+.emoji{font-size:2.3rem;display:block;margin-bottom:4px}
+.lvl{display:inline-block;background:var(--pink);color:var(--ink);font-weight:800;font-size:.72rem;padding:3px 10px;border-radius:12px;margin:6px 6px 0 0}
+.bar2{height:9px;border-radius:9px;background:var(--blush);margin:8px 0 0;overflow:hidden}.bar2 i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--pink));border-radius:9px;width:0;transition:width 1.6s}
+.show .bar2 i{width:var(--w)}
+ol,ul{margin-left:20px}
+
+/* Stats & Proclamations */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;text-align:center}
+.stat{background:var(--ink);color:#fff;border-radius:20px;padding:24px;border-bottom:5px solid var(--pink);transition:.3s}
+.stat:hover{transform:scale(1.07) rotate(-2deg);background:var(--purple)}
+.stat b{display:block;font-size:2.1rem;color:var(--pink)}
+.ann{background:#fff;border-left:6px solid var(--pink);border-radius:12px;padding:14px 18px;margin-bottom:12px;transition:.3s}
+.ann:hover{transform:translateX(10px);box-shadow:0 6px 16px rgba(255,95,168,.3)}
+.ann b{color:var(--purple)}
+
+/* SVG Internal Animations */
+.bob{animation:bob 4s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-8px)}}
+.w2{transform-box:fill-box;transform-origin:20% 100%;animation:flap2 .6s ease-in-out infinite alternate}@keyframes flap2{from{transform:rotate(-14deg)}to{transform:rotate(12deg) scaleY(.75)}}
+.fl2{transform-box:fill-box;transform-origin:left center;animation:flick .25s ease-in-out infinite alternate}
+.spk{transform-box:fill-box;transform-origin:center;animation:twinkle 1.6s ease-in-out infinite}.spk:nth-of-type(2n){animation-delay:-.7s}
+.wave{transform-box:fill-box;transform-origin:bottom;animation:wv .7s ease-in-out infinite alternate}@keyframes wv{from{transform:rotate(-18deg)}to{transform:rotate(18deg)}}
+
+/* Wand Tip Light Pulse (turns on & fades out every few seconds) */
+.wand-glow{transform-box:fill-box;transform-origin:center;animation:wandPulse 3.6s ease-in-out infinite}
+@keyframes wandPulse{
+  0%,18%{opacity:0;transform:scale(.25)}
+  42%,58%{opacity:1;transform:scale(1.25)}
+  82%,100%{opacity:0;transform:scale(.25)}
+}
+
+/* Scroll Reveal, Background, Footer & Cursor Sparks */
+.reveal{opacity:0;transform:translateY(36px) scale(.96);transition:opacity .75s,transform .75s}
+.reveal.show{opacity:1;transform:none}
+#bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:radial-gradient(circle at 8% 12%,rgba(255,95,168,.22),transparent 40%),radial-gradient(circle at 92% 38%,rgba(138,79,208,.25),transparent 45%),radial-gradient(circle at 25% 92%,rgba(255,150,200,.28),transparent 45%),linear-gradient(180deg,#fff4fa 0%,#f5e4ff 55%,#ffe3f1 100%)}
+#bg .cl{position:absolute;display:block;background:rgba(255,255,255,.75);border-radius:60px;animation:bgdrift linear infinite;filter:blur(1px)}
+#bg .cl::before,#bg .cl::after{content:"";position:absolute;background:inherit;border-radius:50%}
+#bg .cl::before{width:50%;height:170%;left:14%;top:-80%}#bg .cl::after{width:38%;height:140%;right:14%;top:-50%}
+@keyframes bgdrift{from{transform:translateX(-320px)}to{transform:translateX(calc(100vw + 320px))}}
+#bg .bs{position:absolute;bottom:-30px;animation:bgup linear infinite;text-shadow:0 0 10px currentColor}
+@keyframes bgup{0%{transform:translateY(0) rotate(0);opacity:0}15%{opacity:.8}100%{transform:translateY(-115vh) rotate(200deg);opacity:0}}
+#bg .orb{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.9),rgba(255,95,168,.15) 60%,transparent 70%);animation:orb 9s ease-in-out infinite alternate}
+@keyframes orb{from{transform:translate(0,0) scale(.9)}to{transform:translate(40px,-50px) scale(1.15)}}
+
+footer{background:var(--ink);color:#cbb6e8;padding:44px 20px 20px;margin-top:30px;border-top:5px solid var(--pink)}
+.fgrid{max-width:1240px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:26px}
+footer h4{color:var(--pink);margin-bottom:8px}footer li{list-style:none;margin:0 0 5px;font-size:.9rem}footer ul{margin:0}
+.copy{text-align:center;margin-top:28px;font-size:.82rem;color:#9d86c0}
+#toTop{position:fixed;right:20px;bottom:20px;width:46px;height:46px;border-radius:50%;border:none;background:var(--pink);color:var(--ink);font-size:1.3rem;font-weight:800;cursor:pointer;box-shadow:0 4px 0 #c63c82;opacity:0;pointer-events:none;transition:.3s;z-index:30}
+#toTop.on{opacity:1;pointer-events:auto}
+.cursor-spark{position:fixed;pointer-events:none;z-index:99;font-size:14px;animation:fade 1s forwards;text-shadow:0 0 8px currentColor}
+@keyframes fade{to{opacity:0;transform:translate(var(--dx,0),var(--dy,-30px)) scale(.3) rotate(120deg)}}
+
+@media(max-width:920px){.split-sec{grid-template-columns:1fr}.art-showcase{max-width:540px;margin:10px auto 0}}
+@media(max-width:700px){.hero h1{font-size:2.1rem}.menu{position:static;box-shadow:none}.dd:hover .menu{display:block}}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+
+<header>
+  <div class="bar">
+    <a class="brand" href="#top">Emberveil <span>Academy</span><small>of Dragon Magic &amp; Arcane Arts</small></a>
+    <nav>
+      <div class="dd"><a href="#about">The Academy</a><div class="menu"><a href="#about">Our legend</a><a href="#about">The Dragon Roost</a><a href="#life">Life at Emberveil</a><a href="#join">Enchantment &amp; Admission</a></div></div>
+      <div class="dd"><a href="#schools">Schools of Magic</a><div class="menu"><a href="#schools">School of Flame</a><a href="#schools">School of Storm</a><a href="#schools">School of Frost &amp; Moon</a><a href="#taming">Dragon Taming</a></div></div>
+      <div class="dd"><a href="#life">Apprentices</a><div class="menu"><a href="#life">Moon calendar</a><a href="#life">Spell timetable</a><a href="#life">Rules of the Roost</a><a href="#life">Grand Library</a><a href="#life">Final Bonding Trial</a><a href="#life">Healer's Tower</a></div></div>
+      <div class="dd"><a href="#taming">Dragon Research</a><div class="menu"><a href="#taming">Egg Hatchery</a><a href="#taming">Flame Control Lab</a><a href="#taming">Sky Riding Grounds</a><a href="#taming">Ancient Runes Lab</a></div></div>
+      <div class="dd"><a href="#news">Chronicles</a><div class="menu"><a href="#news">News</a><a href="#news">Festivals</a><a href="#announcements">Proclamations</a><a href="#news">Guild careers</a></div></div>
+    </nav>
+  </div>
+</header>
+
+<div class="hero" id="top">
+  <!-- Dragon 1: Pink & Violet (Medium) -->
+  <div class="dragon-wrap pink-med" data-speed="1.35" data-y-ratio="0.16" data-start-ratio="0.08" title="Hover to pause & enlarge, drag anywhere in sky!">
+    <svg class="dragon-svg" viewBox="0 0 240 110">
+      <g class="wing"><path d="M70 60 C60 10 110 0 135 18 C115 22 112 34 118 44 C100 38 92 48 96 62 Z" fill="#8a4fd0" stroke="#fff" stroke-opacity=".5"/></g>
+      <path d="M20 78 C45 95 80 90 110 70 C135 52 150 55 165 45 C180 38 192 42 196 50 C190 56 182 56 176 60 C165 72 150 74 135 82 C105 98 55 108 20 90 Z" fill="#ff5fa8"/>
+      <path d="M20 78 C8 70 4 60 10 52 C14 62 22 66 30 70 Z" fill="#c63c82"/>
+      <circle cx="182" cy="48" r="2.6" fill="#1b1030"/>
+      <path d="M170 38 L176 26 L180 38 Z" fill="#ffd6ea"/>
+      <path class="flame" d="M196 52 C210 46 220 54 232 50 C222 60 210 62 196 56 Z" fill="#ff9a3d"/>
+    </svg>
+  </div>
+
+  <!-- Dragon 2: Fiery Gold & Crimson (Large) -->
+  <div class="dragon-wrap gold-lg" data-speed="0.95" data-y-ratio="0.68" data-start-ratio="0.58" title="Hover to pause & enlarge, drag anywhere in sky!">
+    <svg class="dragon-svg" viewBox="0 0 240 110">
+      <g class="wing"><path d="M70 60 C60 10 110 0 135 18 C115 22 112 34 118 44 C100 38 92 48 96 62 Z" fill="#d9383a" stroke="#ffd34d" stroke-opacity=".7"/></g>
+      <path d="M20 78 C45 95 80 90 110 70 C135 52 150 55 165 45 C180 38 192 42 196 50 C190 56 182 56 176 60 C165 72 150 74 135 82 C105 98 55 108 20 90 Z" fill="#ffb703"/>
+      <path d="M20 78 C8 70 4 60 10 52 C14 62 22 66 30 70 Z" fill="#b5171e"/>
+      <circle cx="182" cy="48" r="2.8" fill="#1b1030"/>
+      <path d="M170 38 L176 24 L180 38 Z" fill="#fff3b0"/>
+      <path class="flame" d="M196 52 C212 44 224 54 236 49 C224 62 212 64 196 56 Z" fill="#ff4d6d"/>
+    </svg>
+  </div>
+
+  <!-- Dragon 3: Emerald & Teal (Small) -->
+  <div class="dragon-wrap emerald-sm" data-speed="1.75" data-y-ratio="0.30" data-start-ratio="0.76" title="Hover to pause & enlarge, drag anywhere in sky!">
+    <svg class="dragon-svg" viewBox="0 0 240 110">
+      <g class="wing"><path d="M70 60 C60 10 110 0 135 18 C115 22 112 34 118 44 C100 38 92 48 96 62 Z" fill="#00b4d8" stroke="#90e0ef" stroke-opacity=".75"/></g>
+      <path d="M20 78 C45 95 80 90 110 70 C135 52 150 55 165 45 C180 38 192 42 196 50 C190 56 182 56 176 60 C165 72 150 74 135 82 C105 98 55 108 20 90 Z" fill="#2ec4b6"/>
+      <path d="M20 78 C8 70 4 60 10 52 C14 62 22 66 30 70 Z" fill="#0f766e"/>
+      <circle cx="182" cy="48" r="2.6" fill="#1b1030"/>
+      <path d="M170 38 L176 26 L180 38 Z" fill="#cbf3f0"/>
+      <path class="flame" d="M196 52 C210 46 220 54 232 50 C222 60 210 62 196 56 Z" fill="#72efdd"/>
+    </svg>
+  </div>
+
+  <h1>Master the Art of <em>Magic</em> and Learn to <em>Tame</em> Dragons</h1>
+  <p>At Emberveil Academy, apprentices learn ancient spells, elemental sorcery, and how to bond with and tame noble dragons high above the clouds.</p>
+  <a class="btn" href="#join">Begin Your Bonding</a>
+  <div class="drag-hint">🐉 Hover over any dragon to pause &amp; enlarge, then drag it anywhere in the sky!</div>
+</div>
+
+<main>
+  <!-- 1. THE ACADEMY (Split Layout with Standalone Portal Illustration) -->
+  <section id="about" class="split-sec">
+    <div class="split-left">
+      <h2>Why Choose Emberveil</h2>
+      <div class="grid">
+        <div class="card"><h4>Dragons are part of the school</h4><p>Our dragons are teachers, classmates and guardians. They live in the Roost, sit in lectures and join every festival.</p></div>
+        <div class="card"><h4>Guilds across the realms</h4><p>Graduates become dragon riders, spell wrights, sky wardens and healers in guilds across every kingdom.</p></div>
+        <div class="card"><h4>Hidden in the clouds</h4><p>The academy floats on seven cloud isles, joined by bridges of light and dragon-back rides.</p></div>
+      </div>
+    </div>
+    <div class="art-showcase reveal">
+      <svg viewBox="0 0 320 220">
+        <g class="bob">
+          <path d="M72 205 L96 96 L136 96 L160 205Z" fill="#7b3fb8"/>
+          <circle cx="116" cy="74" r="18" fill="#ffd9b8"/>
+          <circle cx="109" cy="72" r="2.2" fill="#1b1030"/>
+          <circle cx="123" cy="72" r="2.2" fill="#1b1030"/>
+          <path d="M109 81 Q116 87 123 81" stroke="#1b1030" fill="none" stroke-width="1.8"/>
+          <path d="M94 63 L116 14 L138 63Z" fill="#2d174d" stroke="#ff5fa8" stroke-width="1.5"/>
+          <ellipse cx="116" cy="63" rx="29" ry="7" fill="#2d174d"/>
+          <text x="108" y="49" fill="#ffd34d" font-size="15">★</text>
+          <path d="M134 110 L190 124" stroke="#7b3fb8" stroke-width="13" stroke-linecap="round"/>
+          <g>
+            <path class="w2" d="M196 102 C190 70 224 64 240 80 C224 82 222 93 224 104Z" fill="#c79bff"/>
+            <ellipse cx="206" cy="118" rx="25" ry="15" fill="#ff5fa8"/>
+            <circle cx="230" cy="109" r="10" fill="#ff5fa8"/>
+            <circle cx="233" cy="107" r="2.2" fill="#1b1030"/>
+            <path d="M181 120 C170 122 165 113 170 109 C174 116 179 116 183 116Z" fill="#c63c82"/>
+            <path class="fl2" d="M240 110 C250 105 260 112 269 109 C260 118 250 119 240 114Z" fill="#ff9a3d"/>
+          </g>
+        </g>
+        <text class="spk" x="264" y="44" fill="#ffd34d" font-size="20">✦</text>
+        <text class="spk" x="34" y="64" fill="#ff9bd0" font-size="18">✧</text>
+        <text class="spk" x="275" y="165" fill="#c79bff" font-size="16">★</text>
+      </svg>
+      <h3>Teachers Who Care</h3>
+      <p>Our mentors cradle and guide every new hatchling with patience and warmth, just as the ancient Roost teaches.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Creed, Quest &amp; Virtues</h2>
+    <div class="mv">
+      <div class="card"><h3>Our Vision</h3><p>A world where people and dragons live in trust, protecting the realms with wisdom and wonder.</p></div>
+      <div class="card"><h3>Our Quest</h3><ol><li>Teach every apprentice the safe and ancient arts of magic.</li><li>Raise dragons with kindness, never with chains.</li><li>Guard the old spells and discover new ones.</li><li>Send out riders and mages who serve the realms.</li></ol></div>
+      <div class="card"><h3>Virtues</h3><ul><li>Courage</li><li>Respect for all creatures</li><li>Curiosity</li><li>Honour</li></ul></div>
+    </div>
+  </section>
+
+  <section id="join">
+    <h2>The Academy in Numbers</h2>
+    <div class="stats">
+      <div class="stat"><b>99%</b>Successful bondings</div>
+      <div class="stat"><b>12</b>Dragons per mentor circle</div>
+      <div class="stat"><b>40+</b>Spell courses</div>
+      <div class="stat"><b>7</b>Cloud isles</div>
+    </div>
+    <div class="grid" style="margin-top:20px">
+      <div class="card"><h4>Research towers</h4><p>Egg Hatchery, Flame Control, Sky Riding and Ancient Runes.</p></div>
+      <div class="card"><h4>The Grand Library</h4><p>Scrolls, spell books and dragon lore guarded by a sleepy library drake.</p></div>
+    </div>
+  </section>
+
+  <!-- 2. SCHOOLS OF MAGIC -->
+  <section id="schools">
+    <h2>The Schools of Magic</h2>
+    <div class="grid">
+      <div class="card"><span class="tag">School</span><span class="emoji">🔥</span><h3>School of Flame</h3><p>Fire spells, forge magic and flame breathing control. Apprentices learn to stand beside a fire dragon without fear.</p><p><b>Headmaster:</b> Archmage Ignatius Vael</p></div>
+      <div class="card"><span class="tag">School</span><span class="emoji">⚡</span><h3>School of Storm</h3><p>Wind, lightning and sky riding. Home of the Storm Wyverns and the Sky Riding Grounds.</p><p><b>Headmistress:</b> Seraphine Quill</p></div>
+      <div class="card"><span class="tag">School</span><span class="emoji">❄️</span><h3>School of Frost &amp; Moon</h3><p>Ice, moonlight, healing and dream magic, taught beside gentle frost dragons.</p><p><b>Headmaster:</b> Elder Orin Starweaver</p></div>
+    </div>
+  </section>
+
+  <!-- 3. APPRENTICES (Split Layout with Stationary 24-Student Magical Circle Courtyard Scene) -->
+  <section id="life" class="split-sec">
+    <div class="split-left">
+      <h2>Life at Emberveil</h2>
+      <div class="grid">
+        <div class="card"><h3>🎭 Houses &amp; Circles</h3><p>Join spell circles, potion clubs and dragon-care societies.</p></div>
+        <div class="card"><h3>🏅 Sky Games</h3><p>Dragon-back relay races, broom duels and wand skills.</p></div>
+        <div class="card"><h3>🎨 Arts &amp; Legends</h3><p>Rune carving, lantern making and bardic dragon songs.</p></div>
+        <div class="card"><h3>🌍 Realm Exchange</h3><p>Journeys to the Ice Reaches, Sunken Temples and the Ash Mountains.</p></div>
+      </div>
+    </div>
+    <div class="art-showcase reveal">
+      <svg id="class-circle-svg" viewBox="0 0 460 320">
+        <defs>
+          <radialGradient id="circleGlow" cx="50%" cy="52%" r="48%">
+            <stop offset="0%" stop-color="#ffd34d" stop-opacity="0.45"/>
+            <stop offset="55%" stop-color="#ff5fa8" stop-opacity="0.22"/>
+            <stop offset="100%" stop-color="#8a4fd0" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <!-- Courtyard Archways & Sky Stars -->
+        <path d="M25 110 Q75 45 125 110 M180 95 Q230 30 280 95 M335 110 Q385 45 435 110" fill="none" stroke="#5b2a86" stroke-width="4" opacity="0.55"/>
+        <text class="spk" x="45" y="42" fill="#ffd34d" font-size="14">✦</text>
+        <text class="spk" x="230" y="28" fill="#ff9bd0" font-size="15">✧</text>
+        <text class="spk" x="410" y="45" fill="#72efdd" font-size="14">✦</text>
+        <!-- Completely Stationary Courtyard Floor & Concentric Magical Circle -->
+        <ellipse cx="230" cy="186" rx="205" ry="108" fill="url(#circleGlow)"/>
+        <g id="stationary-magic-circle">
+          <ellipse cx="230" cy="186" rx="164" ry="82" fill="none" stroke="#ff5fa8" stroke-width="2.2" stroke-dasharray="10 6"/>
+          <ellipse cx="230" cy="186" rx="126" ry="62" fill="none" stroke="#ffd34d" stroke-width="1.8" stroke-dasharray="6 5"/>
+          <ellipse cx="230" cy="186" rx="84" ry="40" fill="none" stroke="#72efdd" stroke-width="1.6"/>
+          <!-- Stationary Center Emblem -->
+          <ellipse cx="230" cy="186" rx="26" ry="14" fill="#ffd34d" opacity="0.72"/>
+          <circle cx="230" cy="184" r="8" fill="#fff3b0"/>
+        </g>
+        <!-- Dynamic Group populated with 24 Students + Pulsing Wand Tip Lights -->
+        <g id="students-ring"></g>
+      </svg>
+      <h3>First Spells Courtyard Circle</h3>
+      <p>Viewed from above the courtyard, an entire class of 24 apprentices stands around a stationary arcane circle, practicing wand sparks that softly illuminate and fade every few seconds.</p>
+    </div>
+  </section>
+
+  <!-- 4. DRAGON RESEARCH -->
+  <section id="taming">
+    <h2>Dragon Taming Programme</h2>
+    <p style="margin-bottom:10px;color:var(--muted)">At Emberveil, taming means earning trust. Every apprentice passes through four stages with a mentor dragon.</p>
+    <div class="grid">
+      <div class="card"><span class="lvl">Stage 1</span><h3>The Egg Watch</h3><p>Keep an egg warm for 30 nights and learn to hear it hum.</p><div class="bar2"><i style="--w:25%"></i></div></div>
+      <div class="card"><span class="lvl">Stage 2</span><h3>First Trust</h3><p>Hatchling care, feeding and calm speech. No sudden moves.</p><div class="bar2"><i style="--w:50%"></i></div></div>
+      <div class="card"><span class="lvl">Stage 3</span><h3>Flame &amp; Wing</h3><p>Fire-safe training, saddle bonding and first flights.</p><div class="bar2"><i style="--w:75%"></i></div></div>
+      <div class="card" style="background:var(--ink)"><span class="lvl">Stage 4</span><h3 style="color:var(--pink)">The Bonding Trial</h3><p style="color:#d9c8f2">Fly the Ember Run with your dragon and earn the Rider's Mark.</p><div class="bar2"><i style="--w:100%"></i></div></div>
+    </div>
+  </section>
+
+  <!-- MEET THE DRAGONS (Split Layout with Standalone Portal Illustration) -->
+  <section class="split-sec">
+    <div class="split-left">
+      <h2>Meet the Dragons</h2>
+      <div class="grid">
+        <div class="card"><span class="emoji">🐉</span><h3>Cinderwing</h3><p>Fire dragon and Head of the Roost. Calm, proud and 400 years old.</p><span class="lvl">Fire</span><span class="lvl">Mentor</span></div>
+        <div class="card"><span class="emoji">🐲</span><h3>Zephyra</h3><p>A fast storm wyvern who teaches sky riding. Loves races and thunderclouds.</p><span class="lvl">Storm</span><span class="lvl">Flyer</span></div>
+        <div class="card"><span class="emoji">🐉</span><h3>Glacia</h3><p>A gentle frost dragon who guards the Healer's Tower and soothes nervous hatchlings.</p><span class="lvl">Frost</span><span class="lvl">Healer</span></div>
+        <div class="card"><span class="emoji">🥚</span><h3>The Moon Egg</h3><p>A silver egg that glows each full moon. No one knows which dragon will hatch.</p><span class="lvl">Mystery</span></div>
+      </div>
+    </div>
+    <div class="art-showcase reveal">
+      <svg viewBox="0 0 320 215">
+        <g class="bob">
+          <path class="w2" d="M115 108 C104 42 168 32 206 58 C176 62 170 76 176 94Z" fill="#9d65e8"/>
+          <path d="M40 130 C18 124 10 108 16 96 C22 110 32 116 44 120Z" fill="#c63c82"/>
+          <path d="M40 130 C72 162 136 162 190 130 C212 116 228 108 248 102 C264 98 278 108 274 118 C264 124 254 124 246 130 C228 150 200 172 158 178 C105 184 56 172 40 146Z" fill="#ff5fa8"/>
+          <path d="M248 96 L254 80 L260 96Z" fill="#ffd6ea"/>
+          <circle cx="260" cy="110" r="3.2" fill="#1b1030"/>
+          <path class="fl2" d="M275 116 C288 110 302 118 314 114 C304 124 288 126 275 120Z" fill="#ff9a3d"/>
+          <rect x="104" y="112" width="22" height="28" rx="9" fill="#5b2a86"/>
+          <circle cx="115" cy="101" r="12" fill="#ffd9b8"/>
+          <path d="M103 99 C105 86 125 86 127 99 C121 92 109 92 103 99Z" fill="#1b1030"/>
+          <path class="wave" d="M126 116 L142 94" stroke="#ffd9b8" stroke-width="5.5" stroke-linecap="round"/>
+          <rect x="156" y="116" width="22" height="28" rx="9" fill="#ffb703"/>
+          <circle cx="167" cy="105" r="12" fill="#f0c090"/>
+          <path d="M155 105 C154 90 180 90 179 105 C174 96 160 96 155 105Z" fill="#8a4a2a"/>
+          <path class="wave" d="M178 120 L194 98" stroke="#f0c090" stroke-width="5.5" stroke-linecap="round"/>
+        </g>
+        <text class="spk" x="42" y="44" fill="#ffd34d" font-size="20">✦</text>
+        <text class="spk" x="268" y="54" fill="#ff9bd0" font-size="18">✧</text>
+      </svg>
+      <h3>First Flight Together</h3>
+      <p>Apprentices soar high above the seven cloud isles on the back of their newly bonded dragon.</p>
+    </div>
+  </section>
+
+  <!-- 5. CHRONICLES -->
+  <section id="announcements">
+    <h2>Proclamations</h2>
+    <div class="ann"><b>Hatching Night:</b> The Great Egg Hatching begins at the next full moon. First-year apprentices must be at the Roost by dusk.</div>
+    <div class="ann"><b>Bonding Ceremony:</b> Apprentices who pass the Trial of Embers will be matched with their dragon in the Crystal Hall.</div>
+  </section>
+
+  <section id="news">
+    <h2>Chronicles &amp; Festivals</h2>
+    <div class="grid">
+      <div class="card"><span class="tag">News</span><h3>Gates open</h3><p>Apprentice applications are open for the new moon term.</p></div>
+      <div class="card"><span class="tag">Festival</span><h3>Festival of Flames</h3><p>Lantern flights, dragon parades and spell duels under the stars.</p></div>
+      <div class="card"><span class="tag">News</span><h3>New rune discovered</h3><p>The Ancient Runes Lab finds a rune that calms storm dragons.</p></div>
+      <div class="card" style="background:var(--ink)"><span class="tag">Featured</span><h3 style="color:var(--pink)">Graduation Flight</h3><p style="color:#d9c8f2">Graduates soar over the isles with their dragons.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer id="footer">
+  <div class="fgrid">
+    <div><h4>Emberveil Academy</h4><p>Seventh Cloud Isle, above the Ember Mountains. A fictional school for a magical story.</p><p style="margin-top:8px">Raven post · Scrying mirror · Dragon song</p></div>
+    <div><h4>Admission</h4><ul><li>Apprentice entry</li><li>Master mage studies</li><li>Gold &amp; scholarships</li></ul></div>
+    <div><h4>Services</h4><ul><li>Portal gate</li><li>Grand Library</li><li>Dragon rides</li></ul></div>
+    <div><h4>Useful Scrolls</h4><ul><li>Moon calendar</li><li>Spell timetable</li><li>Guild careers</li><li>Other academies</li></ul></div>
+  </div>
+  <p class="copy">&copy; Emberveil Academy. A fictional school.</p>
+</footer>
+<button id="toTop" aria-label="Back to top">↑</button>
+
+<script>
+// 1. Floating clouds + twinkling stars in hero
+const hero = document.getElementById('top');
+const sky = document.createElement('div');
+sky.className = 'sky';
+for (let i = 0; i < 6; i++) {
+  const c = document.createElement('i');
+  c.style.cssText = `top:${8 + i * 14}%;width:${110 + Math.random() * 90}px;height:${34 + Math.random() * 16}px;animation-duration:${28 + Math.random() * 30}s;animation-delay:-${Math.random() * 40}s`;
+  sky.appendChild(c);
+}
+hero.appendChild(sky);
+for (let i = 0; i < 16; i++) {
+  const s = document.createElement('span');
+  s.className = 'star';
+  s.textContent = i % 2 ? '✦' : '♥';
+  s.style.cssText = `left:${Math.random() * 96}%;top:${Math.random() * 90}%;font-size:${10 + Math.random() * 14}px;animation-delay:${Math.random() * 3}s`;
+  hero.appendChild(s);
+}
+
+// 2. Interactive Straight-Line Flight + Hover Pause/Enlarge + 1:1 Free Dragging for 3 Dragons
+(function initDragons() {
+  const wraps = Array.from(hero.querySelectorAll('.dragon-wrap'));
+  const items = wraps.map(el => {
+    const rect = hero.getBoundingClientRect();
+    const w = el.offsetWidth || 180;
+    const h = el.offsetHeight || 85;
+    const speed = parseFloat(el.dataset.speed) || 1.2;
+    const yRatio = parseFloat(el.dataset.yRatio) || 0.25;
+    const startRatio = parseFloat(el.dataset.startRatio) || 0.1;
+    return {
+      el,
+      w,
+      h,
+      x: rect.width * startRatio,
+      y: Math.max(20, Math.min(rect.height - h - 20, rect.height * yRatio)),
+      speed,
+      hovered: false,
+      dragging: false,
+      offsetX: 0,
+      offsetY: 0
+    };
+  });
+
+  let activeDrag = null;
+
+  items.forEach(d => {
+    d.el.addEventListener('mouseenter', () => {
+      d.hovered = true;
+      d.el.classList.add('is-hovered');
+    });
+
+    d.el.addEventListener('mouseleave', () => {
+      d.hovered = false;
+      if (!d.dragging) d.el.classList.remove('is-hovered');
+    });
+
+    d.el.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      const heroRect = hero.getBoundingClientRect();
+      d.dragging = true;
+      d.hovered = true;
+      activeDrag = d;
+      d.el.classList.add('is-dragging', 'is-hovered');
+      d.offsetX = (e.clientX - heroRect.left) - d.x;
+      d.offsetY = (e.clientY - heroRect.top) - d.y;
+      if (d.el.setPointerCapture) {
+        try { d.el.setPointerCapture(e.pointerId); } catch (_) {}
+      }
+    });
+  });
+
+  window.addEventListener('pointermove', e => {
+    if (!activeDrag) return;
+    const heroRect = hero.getBoundingClientRect();
+    const dw = activeDrag.el.offsetWidth || activeDrag.w;
+    const dh = activeDrag.el.offsetHeight || activeDrag.h;
+    const rawX = (e.clientX - heroRect.left) - activeDrag.offsetX;
+    const rawY = (e.clientY - heroRect.top) - activeDrag.offsetY;
+    activeDrag.x = Math.max(0, Math.min(heroRect.width - dw, rawX));
+    activeDrag.y = Math.max(0, Math.min(heroRect.height - dh, rawY));
+    activeDrag.el.style.transform = `translate3d(${activeDrag.x}px, ${activeDrag.y}px, 0)`;
+  });
+
+  function stopDrag(e) {
+    if (!activeDrag) return;
+    const d = activeDrag;
+    d.dragging = false;
+    d.el.classList.remove('is-dragging');
+    const r = d.el.getBoundingClientRect();
+    const stillOver = e && e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    d.hovered = Boolean(stillOver);
+    if (!d.hovered) d.el.classList.remove('is-hovered');
+    activeDrag = null;
+  }
+
+  window.addEventListener('pointerup', stopDrag);
+  window.addEventListener('pointercancel', stopDrag);
+
+  function tick() {
+    const heroW = hero.clientWidth || window.innerWidth;
+    const heroH = hero.clientHeight || window.innerHeight;
+    for (let i = 0; i < items.length; i++) {
+      const d = items[i];
+      const dw = d.el.offsetWidth || d.w;
+      const dh = d.el.offsetHeight || d.h;
+      if (!d.hovered && !d.dragging) {
+        d.x += d.speed;
+        if (d.x > heroW + 30) {
+          d.x = -dw - 20;
+        }
+        if (d.y > heroH - dh) d.y = Math.max(10, heroH - dh - 10);
+      }
+      d.el.style.transform = `translate3d(${d.x}px, ${d.y}px, 0)`;
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+// 3. Populate 24-Student Class around Stationary Magic Circle with Twinkling Wand-Tip Lights
+(function buildStudentCircle() {
+  const ring = document.getElementById('students-ring');
+  if (!ring) return;
+  const ns = 'http://www.w3.org/2000/svg';
+  const total = 24;
+  const cx = 230, cy = 186, rx = 184, ry = 94;
+  const robeColors = ['#ff5fa8', '#8a4fd0', '#2ec4b6', '#ffb703', '#c79bff', '#ff758f'];
+  const skinColors = ['#ffd9b8', '#f0c090', '#d89b6c', '#ffe2c6'];
+  const hairColors = ['#1b1030', '#6f361c', '#d97724', '#3b1d5e'];
+  const lightColors = ['#ffd34d', '#ff75b5', '#72efdd', '#e0aaff'];
+
+  const students = [];
+  for (let i = 0; i < total; i++) {
+    const angle = (i / total) * Math.PI * 2;
+    const sx = cx + Math.cos(angle) * rx;
+    const sy = cy + Math.sin(angle) * ry;
+    students.push({ i, sx, sy });
+  }
+  // Sort back-to-front by Y coordinate for natural depth perspective
+  students.sort((a, b) => a.sy - b.sy);
+
+  students.forEach(({ i, sx, sy }) => {
+    const scale = 0.72 + ((sy - (cy - ry)) / (2 * ry)) * 0.34;
+    const g = document.createElementNS(ns, 'g');
+    g.setAttribute('transform', `translate(${sx.toFixed(1)}, ${sy.toFixed(1)}) scale(${scale.toFixed(2)})`);
+
+    const wandX = sx < cx ? 9 : -9;
+    const wandY = -13;
+    const delay = ((i * 0.45) % 3.6).toFixed(2) + 's';
+    const duration = (3.0 + (i % 4) * 0.45).toFixed(2) + 's';
+    const glowColor = lightColors[i % lightColors.length];
+
+    // Robe
+    const robe = document.createElementNS(ns, 'path');
+    robe.setAttribute('d', 'M-7 8 L-5 -8 L5 -8 L7 8 Z');
+    robe.setAttribute('fill', robeColors[i % robeColors.length]);
+    g.appendChild(robe);
+
+    // Head
+    const head = document.createElementNS(ns, 'circle');
+    head.setAttribute('cx', '0');
+    head.setAttribute('cy', '-13');
+    head.setAttribute('r', '5');
+    head.setAttribute('fill', skinColors[i % skinColors.length]);
+    g.appendChild(head);
+
+    // Hair / Hat
+    const hair = document.createElementNS(ns, 'path');
+    hair.setAttribute('d', 'M-5 -14 C-5 -20 5 -20 5 -14 C3 -16 -3 -16 -5 -14 Z');
+    hair.setAttribute('fill', hairColors[i % hairColors.length]);
+    g.appendChild(hair);
+
+    // Raised Wand
+    const wand = document.createElementNS(ns, 'line');
+    wand.setAttribute('x1', sx < cx ? '4' : '-4');
+    wand.setAttribute('y1', '-6');
+    wand.setAttribute('x2', wandX);
+    wand.setAttribute('y2', wandY);
+    wand.setAttribute('stroke', '#ffd34d');
+    wand.setAttribute('stroke-width', '1.8');
+    wand.setAttribute('stroke-linecap', 'round');
+    g.appendChild(wand);
+
+    // Pulsing Magical Light at Wand Tip (Outer Soft Halo + Bright Core)
+    const lightGroup = document.createElementNS(ns, 'g');
+    lightGroup.setAttribute('class', 'wand-glow');
+    lightGroup.style.animationDelay = delay;
+    lightGroup.style.animationDuration = duration;
+
+    const halo = document.createElementNS(ns, 'circle');
+    halo.setAttribute('cx', wandX);
+    halo.setAttribute('cy', wandY);
+    halo.setAttribute('r', '6.2');
+    halo.setAttribute('fill', glowColor);
+    halo.setAttribute('fill-opacity', '0.45');
+    lightGroup.appendChild(halo);
+
+    const core = document.createElementNS(ns, 'circle');
+    core.setAttribute('cx', wandX);
+    core.setAttribute('cy', wandY);
+    core.setAttribute('r', '2.5');
+    core.setAttribute('fill', '#ffffff');
+    lightGroup.appendChild(core);
+
+    g.appendChild(lightGroup);
+    ring.appendChild(g);
+  });
+})();
+
+// 4. Magical page background elements
+const bg = document.getElementById('bg');
+for (let i = 0; i < 7; i++) {
+  const c = document.createElement('i');
+  c.className = 'cl';
+  c.style.cssText = `top:${4 + i * 14}%;width:${150 + Math.random() * 130}px;height:${44 + Math.random() * 22}px;opacity:${.35 + Math.random() * .4};animation-duration:${50 + Math.random() * 50}s;animation-delay:-${Math.random() * 80}s`;
+  bg.appendChild(c);
+}
+for (let i = 0; i < 4; i++) {
+  const o = document.createElement('div');
+  o.className = 'orb';
+  const s = 90 + Math.random() * 130;
+  o.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 90}%;top:${Math.random() * 85}%;animation-delay:-${Math.random() * 8}s`;
+  bg.appendChild(o);
+}
+const BS = ['✦', '✧', '♥', '★', '✨', '✿'], BC = ['#ff5fa8', '#c79bff', '#8a4fd0', '#ff9bd0', '#ffb347'];
+for (let i = 0; i < 20; i++) {
+  const s = document.createElement('span');
+  s.className = 'bs';
+  s.textContent = BS[i % BS.length];
+  s.style.cssText = `left:${Math.random() * 98}%;color:${BC[i % BC.length]};font-size:${12 + Math.random() * 18}px;animation-duration:${14 + Math.random() * 16}s;animation-delay:-${Math.random() * 28}s`;
+  bg.appendChild(s);
+}
+
+// 5. Scroll reveal, count-up stats, 3D card tilt, cursor sparkles & back-to-top
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); }
+}), { threshold: .12 });
+document.querySelectorAll('section h2, .card, .ann, .stat, .reveal').forEach((el, i) => {
+  el.classList.add('reveal');
+  el.style.transitionDelay = (i % 4) * 80 + 'ms';
+  io.observe(el);
+});
+
+document.querySelectorAll('.stat b').forEach(b => {
+  const m = b.textContent.match(/^(\d+)(.*)$/);
+  if (!m) return;
+  const end = +m[1], suf = m[2];
+  new IntersectionObserver((e, o) => {
+    if (e[0].isIntersecting) {
+      o.disconnect();
+      let t = 0;
+      const id = setInterval(() => {
+        t += end / 40;
+        if (t >= end) { t = end; clearInterval(id); }
+        b.textContent = Math.round(t) + suf;
+      }, 30);
+    }
+  }).observe(b);
+});
+
+document.querySelectorAll('.card').forEach(c => {
+  c.addEventListener('mousemove', e => {
+    const r = c.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    c.style.transform = `translateY(-10px) scale(1.04) rotateY(${x * 14}deg) rotateX(${-y * 14}deg)`;
+  });
+  c.addEventListener('mouseleave', () => c.style.transform = '');
+});
+
+const SP = ['✦', '♥', '✧', '★', '🔥', '✿', '🐉', '✨'], COL = ['#ff5fa8', '#ff9bd0', '#c79bff', '#ffffff', '#8a4fd0'];
+function spark(x, y) {
+  const s = document.createElement('span');
+  s.className = 'cursor-spark';
+  s.textContent = SP[Math.floor(Math.random() * SP.length)];
+  const dx = (Math.random() - .5) * 90, dy = -20 - Math.random() * 70;
+  s.style.cssText = `left:${x}px;top:${y}px;color:${COL[Math.floor(Math.random() * COL.length)]};font-size:${12 + Math.random() * 18}px;--dx:${dx}px;--dy:${dy}px`;
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 1000);
+}
+let last = 0;
+document.addEventListener('mousemove', e => {
+  const n = Date.now();
+  if (n - last < 18) return;
+  last = n;
+  for (let i = 0; i < 3; i++) spark(e.clientX + (Math.random() - .5) * 14, e.clientY + (Math.random() - .5) * 14);
+});
+document.addEventListener('click', e => { for (let i = 0; i < 20; i++) spark(e.clientX, e.clientY); });
+
+const t = document.getElementById('toTop');
+addEventListener('scroll', () => t.classList.toggle('on', scrollY > 500));
+t.onclick = () => scrollTo({ top: 0, behavior: 'smooth' });
+</script>
+</body>
+</html>
